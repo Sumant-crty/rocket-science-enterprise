@@ -1,0 +1,1435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AeroSphere - Rocket Science Enterprise Platform</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-dark: #0a0e27;
+            --secondary-dark: #1a1f3a;
+            --accent-cyan: #00d9ff;
+            --accent-orange: #ff6b35;
+            --accent-purple: #a855f7;
+            --text-primary: #e0e7ff;
+            --text-secondary: #94a3b8;
+            --success-green: #10b981;
+            --warning-yellow: #fbbf24;
+        }
+
+        body {
+            font-family: 'Share Tech Mono', monospace;
+            background: linear-gradient(135deg, var(--primary-dark) 0%, #0f1629 50%, #1a1f3a 100%);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Animated background stars */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(2px 2px at 20% 30%, white, transparent),
+                radial-gradient(2px 2px at 60% 70%, white, transparent),
+                radial-gradient(1px 1px at 50% 50%, white, transparent),
+                radial-gradient(1px 1px at 80% 10%, white, transparent),
+                radial-gradient(2px 2px at 90% 60%, white, transparent),
+                radial-gradient(1px 1px at 33% 80%, white, transparent);
+            background-size: 200% 200%;
+            animation: stars 120s linear infinite;
+            opacity: 0.5;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        @keyframes stars {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(-50%, -50%); }
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Header */
+        header {
+            background: rgba(26, 31, 58, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 217, 255, 0.2);
+            border-radius: 15px;
+            padding: 25px 40px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(0, 217, 255, 0.1);
+            animation: slideDown 0.6s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 3em;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple), var(--accent-orange));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .subtitle {
+            font-size: 1.1em;
+            color: var(--text-secondary);
+            letter-spacing: 3px;
+        }
+
+        /* Navigation Tabs */
+        .nav-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            animation: fadeIn 0.8s ease-out 0.2s both;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .tab-btn {
+            font-family: 'Orbitron', sans-serif;
+            background: rgba(26, 31, 58, 0.6);
+            border: 2px solid rgba(0, 217, 255, 0.3);
+            color: var(--text-primary);
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9em;
+            font-weight: 700;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tab-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 217, 255, 0.3), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .tab-btn:hover::before {
+            left: 100%;
+        }
+
+        .tab-btn:hover {
+            border-color: var(--accent-cyan);
+            box-shadow: 0 0 20px rgba(0, 217, 255, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, rgba(0, 217, 255, 0.2), rgba(168, 85, 247, 0.2));
+            border-color: var(--accent-cyan);
+            box-shadow: 0 0 30px rgba(0, 217, 255, 0.3);
+        }
+
+        /* Tab Content */
+        .tab-content {
+            display: none;
+            animation: fadeInContent 0.5s ease-out;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeInContent {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        /* Module Cards */
+        .module-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .module-card {
+            background: rgba(26, 31, 58, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 217, 255, 0.2);
+            border-radius: 12px;
+            padding: 25px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent-cyan), var(--accent-purple), var(--accent-orange));
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .module-card:hover {
+            border-color: var(--accent-cyan);
+            box-shadow: 0 10px 40px rgba(0, 217, 255, 0.2);
+            transform: translateY(-5px);
+        }
+
+        .module-card:hover::after {
+            transform: scaleX(1);
+        }
+
+        .module-card h3 {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--accent-cyan);
+            margin-bottom: 15px;
+            font-size: 1.3em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .module-icon {
+            font-size: 1.5em;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: var(--text-secondary);
+            font-size: 0.85em;
+            letter-spacing: 1px;
+        }
+
+        .input-group input,
+        .input-group select,
+        .input-group textarea {
+            width: 100%;
+            background: rgba(10, 14, 39, 0.6);
+            border: 1px solid rgba(0, 217, 255, 0.3);
+            border-radius: 6px;
+            padding: 10px;
+            color: var(--text-primary);
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.9em;
+            transition: all 0.3s ease;
+        }
+
+        .input-group input:focus,
+        .input-group select:focus,
+        .input-group textarea:focus {
+            outline: none;
+            border-color: var(--accent-cyan);
+            box-shadow: 0 0 15px rgba(0, 217, 255, 0.3);
+        }
+
+        .btn {
+            font-family: 'Orbitron', sans-serif;
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+            border: none;
+            color: white;
+            padding: 12px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9em;
+            font-weight: 700;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+            box-shadow: 0 4px 15px rgba(0, 217, 255, 0.3);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(0, 217, 255, 0.5);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, var(--accent-orange), #ff8c42);
+        }
+
+        .output-panel {
+            background: rgba(10, 14, 39, 0.8);
+            border: 1px solid rgba(0, 217, 255, 0.2);
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 15px;
+            min-height: 100px;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.85em;
+            line-height: 1.6;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 8px;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .status-active {
+            background: var(--success-green);
+            box-shadow: 0 0 10px var(--success-green);
+        }
+
+        .status-warning {
+            background: var(--warning-yellow);
+            box-shadow: 0 0 10px var(--warning-yellow);
+        }
+
+        .status-standby {
+            background: var(--text-secondary);
+        }
+
+        /* Data Visualization */
+        .chart-container {
+            background: rgba(10, 14, 39, 0.6);
+            border: 1px solid rgba(0, 217, 255, 0.2);
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 15px;
+            height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .chart-placeholder {
+            color: var(--text-secondary);
+            text-align: center;
+        }
+
+        /* Dashboard Stats */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: rgba(26, 31, 58, 0.7);
+            border: 1px solid rgba(0, 217, 255, 0.2);
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            border-color: var(--accent-cyan);
+            box-shadow: 0 0 20px rgba(0, 217, 255, 0.2);
+        }
+
+        .stat-value {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.5em;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.85em;
+            margin-top: 8px;
+            letter-spacing: 1px;
+        }
+
+        /* Footer */
+        footer {
+            background: rgba(26, 31, 58, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 217, 255, 0.2);
+            border-radius: 15px;
+            padding: 20px 40px;
+            margin-top: 40px;
+            text-align: center;
+            animation: fadeIn 1s ease-out 0.4s both;
+        }
+
+        footer p {
+            color: var(--text-secondary);
+            font-size: 0.9em;
+            margin: 5px 0;
+        }
+
+        footer a {
+            color: var(--accent-cyan);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        footer a:hover {
+            color: var(--accent-purple);
+            text-shadow: 0 0 10px rgba(0, 217, 255, 0.5);
+        }
+
+        .copyright {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2em;
+            }
+
+            .module-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-tabs {
+                flex-direction: column;
+            }
+
+            .tab-btn {
+                width: 100%;
+            }
+        }
+
+        /* Loading Animation */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(0, 217, 255, 0.3);
+            border-top-color: var(--accent-cyan);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .progress-bar {
+            background: rgba(10, 14, 39, 0.6);
+            border-radius: 10px;
+            height: 10px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-cyan), var(--accent-purple));
+            border-radius: 10px;
+            transition: width 0.3s ease;
+            box-shadow: 0 0 10px rgba(0, 217, 255, 0.5);
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            border-left: 4px solid;
+        }
+
+        .alert-success {
+            background: rgba(16, 185, 129, 0.1);
+            border-color: var(--success-green);
+            color: var(--success-green);
+        }
+
+        .alert-warning {
+            background: rgba(251, 191, 36, 0.1);
+            border-color: var(--warning-yellow);
+            color: var(--warning-yellow);
+        }
+
+        .alert-info {
+            background: rgba(0, 217, 255, 0.1);
+            border-color: var(--accent-cyan);
+            color: var(--accent-cyan);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🚀 AeroSphere</h1>
+            <p class="subtitle">Rocket Science Enterprise Platform</p>
+        </header>
+
+        <div class="nav-tabs">
+            <button class="tab-btn active" onclick="switchTab('mission')">🎯 Mission Planning</button>
+            <button class="tab-btn" onclick="switchTab('simulation')">🔬 Simulation</button>
+            <button class="tab-btn" onclick="switchTab('design')">📐 Design & Engineering</button>
+            <button class="tab-btn" onclick="switchTab('manufacturing')">🏭 Manufacturing</button>
+            <button class="tab-btn" onclick="switchTab('launch')">🚀 Launch Operations</button>
+            <button class="tab-btn" onclick="switchTab('analytics')">📊 Data Analytics</button>
+            <button class="tab-btn" onclick="switchTab('compliance')">📋 Compliance</button>
+        </div>
+
+        <!-- Mission Planning Tab -->
+        <div id="mission" class="tab-content active">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value">12</div>
+                    <div class="stat-label">ACTIVE MISSIONS</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">98.7%</div>
+                    <div class="stat-label">SUCCESS RATE</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">247</div>
+                    <div class="stat-label">TOTAL LAUNCHES</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">5</div>
+                    <div class="stat-label">SCHEDULED</div>
+                </div>
+            </div>
+
+            <div class="module-grid">
+                <div class="module-card">
+                    <h3><span class="module-icon">🎯</span>Trajectory Calculator</h3>
+                    <div class="input-group">
+                        <label>Target Orbit (km)</label>
+                        <input type="number" id="targetOrbit" placeholder="400" value="400">
+                    </div>
+                    <div class="input-group">
+                        <label>Payload Mass (kg)</label>
+                        <input type="number" id="payloadMass" placeholder="5000" value="5000">
+                    </div>
+                    <div class="input-group">
+                        <label>Launch Inclination (°)</label>
+                        <input type="number" id="inclination" placeholder="51.6" value="51.6">
+                    </div>
+                    <button class="btn" onclick="calculateTrajectory()">Calculate Trajectory</button>
+                    <div class="output-panel" id="trajectoryOutput">
+                        <span class="status-indicator status-standby"></span>Ready to calculate...
+                    </div>
+                </div>
+
+                <div class="module-card">
+                    <h3><span class="module-icon">⏱️</span>Mission Timeline</h3>
+                    <div class="input-group">
+                        <label>Mission Name</label>
+                        <input type="text" id="missionName" placeholder="Artemis X">
+                    </div>
+                    <div class="input-group">
+                        <label>Launch Window</label>
+                        <input type="datetime-local" id="launchWindow">
+                    </div>
+                    <div class="input-group">
+                        <label>Mission Duration (days)</label>
+                        <input type="number" id="missionDuration" placeholder="30" value="30">
+                    </div>
+                    <button class="btn" onclick="createTimeline()">Generate Timeline</button>
+                    <div class="output-panel" id="timelineOutput">
+                        <span class="status-indicator status-standby"></span>Timeline planning ready
+                    </div>
+                </div>
+
+                <div class="module-card">
+                    <h3><span class="module-icon">⚡</span>Delta-V Budget</h3>
+                    <div class="input-group">
+                        <label>Total Mass (kg)</label>
+                        <input type="number" id="totalMass" placeholder="25000" value="25000">
+                    </div>
+                    <div class="input-group">
+                        <label>Fuel Mass (kg)</label>
+                        <input type="number" id="fuelMass" placeholder="18000" value="18000">
+                    </div>
+                    <div class="input-group">
+                        <label>Specific Impulse (s)</label>
+                        <input type="number" id="specificImpulse" placeholder="311" value="311">
+                    </div>
+                    <button class="btn" onclick="calculateDeltaV()">Calculate Delta-V</button>
+                    <div class="output-panel" id="deltaVOutput">
+                        <span class="status-indicator status-standby"></span>Delta-V calculator ready
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Simulation Tab -->
+        <div id="simulation" class="tab-content">
+            <div class="module-grid">
+                <div class="module-card">
+                    <h3><span class="module-icon">🔬</span>Physics Simulation</h3>
+                    <div class="input-group">
+                        <label>Simulation Type</label>
+                        <select id="simType">
+                            <option value="orbital">Orbital Mechanics</option>
+                            <option value="atmospheric">Atmospheric Entry</option>
+                            <option value="propulsion">Propulsion System</option>
+                            <option value="structural">Structural Analysis</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label>Time Step (seconds)</label>
+                        <input type="number" id="timeStep" placeholder="0.1" value="0.1">
+                    </div>
+                    <div class="input-group">
+                        <label>Duration (seconds)</label>
+                        <input type="number" id="simDuration" placeholder="1000" value="1000">
+                    </div>
+                    <button class="btn" onclick="runSimulation()">Run Simulation</button>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="simProgress" style="width: 0%"></div>
+                    </div>
+                    <div class="output-panel" id="simOutput">
+                        <span class="status-indicator status-standby"></span>Simulation engine ready
+                    </div>
+                </div>
+
+                <div class="module-card">
+                    <h3><span class="module-icon">🌡️</span>Thermal Analysis</h3>
+                    <div class="input-group">
+                        <label>Component</label>
+                        <select id="thermalComponent">
+                            <option value="nozzle">Engine Nozzle</option>
+                            <option value="heatshield">Heat Shield</option>
+                            <option value="chamber">Combustion Chamber</option>
+                            <option value="tank">Fuel Tank</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label>Ambient Temperature (K)</label>
+                        <input type="number" id="ambientTemp" placeholder="300" value="300">
+                    </div>
+                    <div class="input-group">
+                        <label>Heat Flux (W/m²)</label>
+                        <input type="number" id="heatFlux" placeholder="50000" value="50000">
+                    </div>
+                    <button class="btn" onclick="analyzeThermal()">Analyze</button>
+                    <div class="output-panel" id="thermalOutput">
+                        <span class="status-indicator status-standby"></span>Thermal analysis ready
+                    </div>
+                </div>
+
+                <div class="module-card">
+                    <h3><span class="module-icon">💨</span>Aerodynamic Model</h3>
+                    <div class="input-group">
+                        <label>Velocity (m/s)</label>
+                        <input type="number" id="velocity" placeholder="7800" value="7800">
+                    </div>
+                    <div class="input-group">
+                        <label>Altitude (km)</label>
+                        <input type="number" id="altitude" placeholder="80" value="80">
+                    </div>
+                    <div class="input-group">
+                        <label>Angle of Attack (°)</label>
+                        <input type="number" id="angleAttack" placeholder="5" value="5">
+                    </div>
+                    <button class="btn" onclick="calculateAerodynamics()">Calculate Forces</button>
+                    <div class="chart-container">
+                        <div class="chart-placeholder">Aerodynamic force visualization will appear here</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Design & Engineering Tab -->
+        <div id="design" class="tab-content">
+            <div class="module-grid">
+                <div class="module-card">
+                    <h3><span class="module-icon">📐</span>Structural Design</h3>
+                    <div class="input-group">
+                        <label>Material</label>
+                        <select id="material">
+                            <option value="aluminum">Aluminum 7075</option>
+                            <option value="titanium">Titanium Ti-6Al-4V</option>
+                            <option value="carbon">Carbon Fiber Composite</option>
+                            <option value="steel">Stainless Steel</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label>Component Type</label>
+                        <select id="componentType">
+                            <option value="fuselage">Fuselage</option>
+                            <option value="tank">Propellant Tank</option>
+                            <option value="fairing">Payload Fairing</option>
+                            <option value="strut">Support Strut</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label>Safety Factor</label>
+                        <input type="number" id="safetyFactor" placeholder="1.4" value="1.4" step="0.1">
+                    </div>
+                    <button class="btn" onclick="analyzeStructure()">Analyze Structure</button>
+                    <div class="output-panel" id="structureOutput">
+                        <span class="status-indicator status-standby"></span>Structural analyzer ready
+                    </div>
+                </div>
+
+                <div class="module-card">
+                    <h3><span class="module-icon">⚙️</span>Propulsion System</h3>
+                    <div class="input-group">
+                        <label>Engine Type</label>
+                        <select id="engineType">
+                            <option value="liquid">Liquid Bipropellant</option>
+                            <option value="solid">Solid Rocket Motor</option>
+                            <option value="hybrid">Hybrid</option>
+                            <option value="ion">Ion Thruster</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label>Thrust Required (kN)</label>
+                        <input type="number" id="thrustRequired" placeholder="7500" value="7500">
+                    </div>
+                    <div class="input-group">
+                        <label>Burn Time (seconds)</label>
+                        <input type="number" id="burnTime" placeholder="150" value="150">
+                    </div>
+                    <button class="btn" onclick="designPropulsion()">Design Engine</button>
+                    <div class="output-panel" id="propulsionOutput">
+                        <span class="status-indicator status-standby"></span>Propulsion designer ready
+                    </div>
+                </div>
+
+                <div class="module-card">
+                    <h3><span class="module-icon">🔋</span>Power Systems</h3>
+                    <div class="input-group">
+                        <label>Power Source</label>
+                        <select id="powerSource">
+                            <option value="solar">Solar Panels</option>
+                            <option value="battery">Battery Pack</option>
+                            <option value="rtg">Radioisotope Generator</option>
+                            <option value="fuel">Fuel Cells</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label>Power Required (W)</label>
+                        <input type="number" id="powerRequired" placeholder="5000" value="5000">
+                    </div>
+                    <div class="input-group">
+                        <label>Mission Duration (days)</label>
+                        <input type="number" id="powerDuration" placeholder="365" value="365">
+                    </div>
+                    <button class="btn" onclick="designPowerSystem()">Calculate Power</button>
+                    <div class="output-panel" id="powerOutput">
+                        <span class="status-indicator status-standby"></span>Power system designer ready
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Manufacturing Tab -->
+        <div id="manufacturing" class="tab-content">
+            <div class="module-grid">
+                <div class="module-card">
+                    <h3><span class="module-icon">🏭</span>Production Tracker</h3>
+                    <div class="input-group">
+                        <label>Component ID</label>
+                        <input type="text" id="componentId" placeholder="RKT-2026-001">
+                    </div>
+                    <div class="input-group">
+                        <label>Production Stage</label>
+                        <select id="productionStage">
+                            <option value="design">Design Validation</option>
+                            <option value="fabrication">Fabrication</option>
+                            <option value="assembly">Assembly</option>
+                            <option value="testing">Quality Testing</option>
+                            <option value="complete">Complete</option>
+                        </select>
+                    </div>
+                    <button class="btn" onclick="updateProduction()">Update Status</button>
+                    <div class="output-panel" id="productionOutput">
+                        <span class="status-indicator status-active"></span>Production line active
+                    </div>
+                </div>
+
+                <div class="module-card">
+                    <h3><span class="module-icon">📦</span>Supply Chain</h3>
+                    <div class="input-group">
+                        <label>Part Number</label>
+                        <input type="text" id="partNumber" placeholder="SC-5847">
+                    </div>
+                    <div class="input-group">
+                        <label>Supplier</label>
+                        <input type="text" id="supplier" placeholder="Advanced Aerospace Materials Inc.">
+                    </div>
+                    <div class="input-group">
+                        <label>Quantity</label>
+                        <input type="number" id="quantity" placeholder="1000" value="1000">
+                    </div>
+                    <button class="btn" onclick="trackSupply()">Track Shipment</button>
+                    <div class="output-panel" id="supplyOutput">
+                        <span class="status-indicator status-active"></span>Supply chain monitoring active
+                    </div>
+                </div>
+
+                <div class="module-card">
+                    <h3><span class="module-icon">✅</span>Quality Control</h3>
+                    <div class="input-group">
+                        <label>Test Type</label>
+                        <select id="testType">
+                            <option value="vibration">Vibration Test</option>
+                            <option value="thermal">Thermal Cycling</option>
+                            <option value="pressure">Pressure Test</option>
+                            <option value="ndt">Non-Destructive Testing</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label>Test Standard</label>
+                        <select id="testStandard">
+                            <option value="nasa">NASA-STD-7001</option>
+                            <option value="mil">MIL-STD-1540</option>
+                            <option value="iso">ISO 9001</option>
+                        </select>
+                    </div>
+                    <button class="btn" onclick="runQualityTest()">Run Test</button>
+                    <div class="output-panel" id="qualityOutput">
+                        <span class="status-indicator status-standby"></span>Quality control ready
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Launch Operations Tab -->
+        <div id="launch" class="tab-content">
+            <div class="module-grid">
+                <div class="module-card">
+                    <h3><span class="module-icon">🚀</span>Launch Control</h3>
+                    <div class="input-group">
+                        <label>Launch Pad</label>
+                        <select id="launchPad">
+                            <option value="lc39a">LC-39A (Kennedy)</option>
+                            <option value="slc40">SLC-40 (Cape Canaveral)</option>
+                            <option value="slc4e">SLC-4E (Vandenberg)</option>
+                            <option value="bc01">BC-01 (Boca Chica)</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label>T-Minus (seconds)</label>
+                        <input type="number" id="tMinus" placeholder="600" value="600">
+                    </div>
+                    <button class="btn" onclick="initiateCountdown()">Initiate Countdown</button>
+                    <button class="btn btn-secondary" onclick="abortLaunch()">Abort</button>
+                    <div class="output-panel" id="launchOutput">
+                        <span class="status-indicator status-warning"></span>Launch systems on standby
+                    </div>
+                </div>
+
+                <div class="module-card">
+                    <h3><span class="module-icon">📡</span>Telemetry Monitor</h3>
+                    <div class="input-group">
+                        <label>Vehicle ID</label>
+                        <input type="text" id="vehicleId" placeholder="F9-B1077" value="F9-B1077">
+                    </div>
+                    <div class="alert alert-info">
+                        <strong>Real-time Data Stream:</strong><br>
+                        Altitude: 125.4 km<br>
+                        Velocity: 7,845 m/s<br>
+                        Acceleration: 3.2 g<br>
+                        Signal Strength: 98%
+                    </div>
+                    <button class="btn" onclick="startTelemetry()">Start Monitoring</button>
+                    <div class="chart-container">
+                        <div class="chart-placeholder">Live telemetry data visualization</div>
+                    </div>
+                </div>
+
+                <div class="module-card">
+                    <h3><span class="module-icon">🎮</span>Flight Control</h3>
+                    <div class="input-group">
+                        <label>Command</label>
+                        <select id="flightCommand">
+                            <option value="stage">Stage Separation</option>
+                            <option value="maneuver">Orbital Maneuver</option>
+                            <option value="deploy">Payload Deploy</option>
+                            <option value="landing">Landing Sequence</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label>Execution Time (T+seconds)</label>
+                        <input type="number" id="execTime" placeholder="145" value="145">
+                    </div>
+                    <button class="btn" onclick="sendCommand()">Send Command</button>
+                    <div class="output-panel" id="commandOutput">
+                        <span class="status-indicator status-active"></span>Flight control active
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Data Analytics Tab -->
+        <div id="analytics" class="tab-content">
+            <div class="module-grid">
+                <div class="module-card">
+                    <h3><span class="module-icon">📊</span>Performance Analysis</h3>
+                    <div class="input-group">
+                        <label>Data Set</label>
+                        <select id="dataSet">
+                            <option value="flight">Flight Data</option>
+                            <option value="engine">Engine Performance</option>
+                            <option value="thermal">Thermal Logs</option>
+                            <option value="structural">Structural Stress</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label>Analysis Type</label>
+                        <select id="analysisType">
+                            <option value="trend">Trend Analysis</option>
+                            <option value="anomaly">Anomaly Detection</option>
+                            <option value="predictive">Predictive Modeling</option>
+                            <option value="correlation">Correlation Study</option>
+                        </select>
+                    </div>
+                    <button class="btn" onclick="runAnalysis()">Run Analysis</button>
+                    <div class="chart-container">
+                        <div class="chart-placeholder">Data analysis visualization</div>
+                    </div>
+                </div>
+
+                <div class="module-card">
+                    <h3><span class="module-icon">🔍</span>Mission Review</h3>
+                    <div class="input-group">
+                        <label>Mission ID</label>
+                        <input type="text" id="missionId" placeholder="ARS-2026-012">
+                    </div>
+                    <button class="btn" onclick="generateReport()">Generate Report</button>
+                    <div class="output-panel" id="reportOutput">
+                        <span class="status-indicator status-standby"></span>Report generator ready
+                    </div>
+                    <div class="alert alert-success" style="display: none;" id="reportAlert">
+                        Report generated successfully! Key findings:<br>
+                        • Nominal performance across all systems<br>
+                        • Fuel efficiency: 98.3% of predicted<br>
+                        • All objectives achieved
+                    </div>
+                </div>
+
+                <div class="module-card">
+                    <h3><span class="module-icon">📈</span>Predictive Maintenance</h3>
+                    <div class="input-group">
+                        <label>System</label>
+                        <select id="maintenanceSystem">
+                            <option value="engine">Main Engine</option>
+                            <option value="hydraulic">Hydraulic Systems</option>
+                            <option value="avionics">Avionics</option>
+                            <option value="thermal">Thermal Protection</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label>Flight Hours</label>
+                        <input type="number" id="flightHours" placeholder="125" value="125">
+                    </div>
+                    <button class="btn" onclick="predictMaintenance()">Predict Needs</button>
+                    <div class="output-panel" id="maintenanceOutput">
+                        <span class="status-indicator status-standby"></span>Predictive engine ready
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Compliance Tab -->
+        <div id="compliance" class="tab-content">
+            <div class="module-grid">
+                <div class="module-card">
+                    <h3><span class="module-icon">📋</span>Regulatory Check</h3>
+                    <div class="input-group">
+                        <label>Agency</label>
+                        <select id="agency">
+                            <option value="faa">FAA (Federal Aviation Administration)</option>
+                            <option value="nasa">NASA</option>
+                            <option value="itar">ITAR (Export Control)</option>
+                            <option value="epa">EPA (Environmental)</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label>Document Type</label>
+                        <select id="docType">
+                            <option value="license">Launch License</option>
+                            <option value="safety">Safety Report</option>
+                            <option value="environmental">Environmental Assessment</option>
+                            <option value="technical">Technical Documentation</option>
+                        </select>
+                    </div>
+                    <button class="btn" onclick="checkCompliance()">Verify Compliance</button>
+                    <div class="output-panel" id="complianceOutput">
+                        <span class="status-indicator status-standby"></span>Compliance checker ready
+                    </div>
+                </div>
+
+                <div class="module-card">
+                    <h3><span class="module-icon">📄</span>Documentation Manager</h3>
+                    <div class="input-group">
+                        <label>Document Name</label>
+                        <input type="text" id="docName" placeholder="Flight Safety Analysis Report">
+                    </div>
+                    <div class="input-group">
+                        <label>Version</label>
+                        <input type="text" id="docVersion" placeholder="2.3" value="2.3">
+                    </div>
+                    <div class="input-group">
+                        <label>Status</label>
+                        <select id="docStatus">
+                            <option value="draft">Draft</option>
+                            <option value="review">In Review</option>
+                            <option value="approved">Approved</option>
+                            <option value="archived">Archived</option>
+                        </select>
+                    </div>
+                    <button class="btn" onclick="updateDocument()">Update Document</button>
+                    <div class="output-panel" id="docOutput">
+                        <span class="status-indicator status-standby"></span>Document system ready
+                    </div>
+                </div>
+
+                <div class="module-card">
+                    <h3><span class="module-icon">🔒</span>Safety Protocols</h3>
+                    <div class="input-group">
+                        <label>Safety Zone</label>
+                        <select id="safetyZone">
+                            <option value="launch">Launch Area</option>
+                            <option value="processing">Processing Facility</option>
+                            <option value="fueling">Fueling Operations</option>
+                            <option value="testing">Test Stand</option>
+                        </select>
+                    </div>
+                    <div class="alert alert-warning">
+                        <strong>Active Safety Protocols:</strong><br>
+                        • Personnel clearance required<br>
+                        • Hazmat procedures in effect<br>
+                        • Emergency response on standby
+                    </div>
+                    <button class="btn" onclick="verifySafety()">Verify Protocols</button>
+                    <div class="output-panel" id="safetyOutput">
+                        <span class="status-indicator status-active"></span>Safety systems active
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p class="copyright">© 2026 Sumant | AeroSphere Rocket Science Platform</p>
+            <p>Contact: <a href="mailto:sumant.chakravarty@outlook.com">sumant.chakravarty@outlook.com</a></p>
+            <p style="margin-top: 10px; font-size: 0.8em;">Advancing aerospace engineering through integrated technology solutions</p>
+        </footer>
+    </div>
+
+    <script>
+        // Tab switching functionality
+        function switchTab(tabName) {
+            const tabs = document.querySelectorAll('.tab-content');
+            const buttons = document.querySelectorAll('.tab-btn');
+            
+            tabs.forEach(tab => tab.classList.remove('active'));
+            buttons.forEach(btn => btn.classList.remove('active'));
+            
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        // Mission Planning Functions
+        function calculateTrajectory() {
+            const orbit = document.getElementById('targetOrbit').value;
+            const mass = document.getElementById('payloadMass').value;
+            const inclination = document.getElementById('inclination').value;
+            
+            const output = document.getElementById('trajectoryOutput');
+            output.innerHTML = `
+                <span class="status-indicator status-active"></span>
+                <strong>Trajectory Calculation Results:</strong><br>
+                Target Orbit: ${orbit} km<br>
+                Payload Mass: ${mass} kg<br>
+                Inclination: ${inclination}°<br>
+                <br>
+                <strong>Computed Parameters:</strong><br>
+                • Orbital Velocity: ${(Math.sqrt(398600.4418 / (6371 + parseFloat(orbit)))).toFixed(2)} km/s<br>
+                • Orbital Period: ${(2 * Math.PI * Math.sqrt(Math.pow((6371 + parseFloat(orbit)), 3) / 398600.4418) / 60).toFixed(2)} minutes<br>
+                • Apogee/Perigee: ${orbit} km (circular orbit)<br>
+                • Required Delta-V: ~${(9.3 + parseFloat(orbit) * 0.005).toFixed(2)} km/s
+            `;
+        }
+
+        function createTimeline() {
+            const name = document.getElementById('missionName').value || 'Unnamed Mission';
+            const duration = document.getElementById('missionDuration').value;
+            
+            const output = document.getElementById('timelineOutput');
+            output.innerHTML = `
+                <span class="status-indicator status-active"></span>
+                <strong>Mission: ${name}</strong><br>
+                Duration: ${duration} days<br>
+                <br>
+                <strong>Timeline Milestones:</strong><br>
+                T-0: Launch<br>
+                T+${Math.floor(duration * 0.1)} days: Initial orbit checkout<br>
+                T+${Math.floor(duration * 0.3)} days: Primary mission phase<br>
+                T+${Math.floor(duration * 0.7)} days: Secondary objectives<br>
+                T+${duration} days: Mission completion
+            `;
+        }
+
+        function calculateDeltaV() {
+            const totalMass = parseFloat(document.getElementById('totalMass').value);
+            const fuelMass = parseFloat(document.getElementById('fuelMass').value);
+            const isp = parseFloat(document.getElementById('specificImpulse').value);
+            
+            const g = 9.80665; // m/s²
+            const dryMass = totalMass - fuelMass;
+            const deltaV = isp * g * Math.log(totalMass / dryMass) / 1000; // km/s
+            
+            const output = document.getElementById('deltaVOutput');
+            output.innerHTML = `
+                <span class="status-indicator status-active"></span>
+                <strong>Delta-V Budget Analysis:</strong><br>
+                Total Mass: ${totalMass} kg<br>
+                Fuel Mass: ${fuelMass} kg<br>
+                Dry Mass: ${dryMass} kg<br>
+                <br>
+                <strong>Results:</strong><br>
+                • Delta-V Capability: ${deltaV.toFixed(3)} km/s<br>
+                • Mass Ratio: ${(totalMass / dryMass).toFixed(3)}<br>
+                • Fuel Fraction: ${((fuelMass / totalMass) * 100).toFixed(1)}%
+            `;
+        }
+
+        // Simulation Functions
+        function runSimulation() {
+            const simType = document.getElementById('simType').value;
+            const output = document.getElementById('simOutput');
+            const progress = document.getElementById('simProgress');
+            
+            output.innerHTML = '<span class="status-indicator status-active"></span>Simulation running...';
+            
+            let width = 0;
+            const interval = setInterval(() => {
+                width += 10;
+                progress.style.width = width + '%';
+                
+                if (width >= 100) {
+                    clearInterval(interval);
+                    output.innerHTML = `
+                        <span class="status-indicator status-active"></span>
+                        <strong>Simulation Complete!</strong><br>
+                        Type: ${simType.replace(/([A-Z])/g, ' $1').trim()}<br>
+                        Status: Success<br>
+                        Convergence: 99.7%<br>
+                        Computational Time: ${(Math.random() * 30 + 10).toFixed(2)}s
+                    `;
+                }
+            }, 200);
+        }
+
+        function analyzeThermal() {
+            const component = document.getElementById('thermalComponent').value;
+            const temp = document.getElementById('ambientTemp').value;
+            const flux = document.getElementById('heatFlux').value;
+            
+            const output = document.getElementById('thermalOutput');
+            output.innerHTML = `
+                <span class="status-indicator status-active"></span>
+                <strong>Thermal Analysis Results:</strong><br>
+                Component: ${component.replace(/([A-Z])/g, ' $1').trim()}<br>
+                Peak Temperature: ${(parseFloat(temp) + parseFloat(flux) / 100).toFixed(0)} K<br>
+                Heat Transfer Rate: ${flux} W/m²<br>
+                Thermal Margin: NOMINAL<br>
+                Status: Within operational limits
+            `;
+        }
+
+        function calculateAerodynamics() {
+            const velocity = document.getElementById('velocity').value;
+            const altitude = document.getElementById('altitude').value;
+            const angle = document.getElementById('angleAttack').value;
+            
+            const q = 0.5 * (1.225 * Math.exp(-parseFloat(altitude) / 8.5)) * Math.pow(parseFloat(velocity), 2);
+            
+            alert(`Aerodynamic Analysis:\n\nDynamic Pressure: ${q.toFixed(2)} Pa\nDrag Force: ~${(q * 10).toFixed(0)} N\nLift Force: ~${(q * 5).toFixed(0)} N\nMach Number: ${(parseFloat(velocity) / 340).toFixed(2)}`);
+        }
+
+        // Design Functions
+        function analyzeStructure() {
+            const material = document.getElementById('material').value;
+            const component = document.getElementById('componentType').value;
+            
+            const output = document.getElementById('structureOutput');
+            output.innerHTML = `
+                <span class="status-indicator status-active"></span>
+                <strong>Structural Analysis:</strong><br>
+                Material: ${material.replace(/([A-Z])/g, ' $1').trim()}<br>
+                Component: ${component.replace(/([A-Z])/g, ' $1').trim()}<br>
+                <br>
+                Maximum Stress: 425 MPa<br>
+                Yield Strength: 503 MPa<br>
+                Safety Margin: 18.4%<br>
+                Status: PASS
+            `;
+        }
+
+        function designPropulsion() {
+            const engineType = document.getElementById('engineType').value;
+            const thrust = document.getElementById('thrustRequired').value;
+            
+            const output = document.getElementById('propulsionOutput');
+            output.innerHTML = `
+                <span class="status-indicator status-active"></span>
+                <strong>Propulsion Design:</strong><br>
+                Engine Type: ${engineType.replace(/([A-Z])/g, ' $1').trim()}<br>
+                Thrust: ${thrust} kN<br>
+                <br>
+                Estimated Mass Flow: ${(parseFloat(thrust) * 0.3).toFixed(1)} kg/s<br>
+                Chamber Pressure: ${(parseFloat(thrust) * 0.15).toFixed(0)} bar<br>
+                Nozzle Expansion Ratio: ${(Math.random() * 50 + 30).toFixed(1)}
+            `;
+        }
+
+        function designPowerSystem() {
+            const powerSource = document.getElementById('powerSource').value;
+            const required = document.getElementById('powerRequired').value;
+            
+            const output = document.getElementById('powerOutput');
+            output.innerHTML = `
+                <span class="status-indicator status-active"></span>
+                <strong>Power System Design:</strong><br>
+                Source: ${powerSource.replace(/([A-Z])/g, ' $1').trim()}<br>
+                Required Power: ${required} W<br>
+                <br>
+                Recommended Capacity: ${(parseFloat(required) * 1.3).toFixed(0)} W<br>
+                Estimated Mass: ${(parseFloat(required) * 0.02).toFixed(1)} kg<br>
+                Efficiency: 92%
+            `;
+        }
+
+        // Manufacturing Functions
+        function updateProduction() {
+            const componentId = document.getElementById('componentId').value;
+            const stage = document.getElementById('productionStage').value;
+            
+            const output = document.getElementById('productionOutput');
+            output.innerHTML = `
+                <span class="status-indicator status-active"></span>
+                <strong>Production Update:</strong><br>
+                Component: ${componentId}<br>
+                Stage: ${stage.replace(/([A-Z])/g, ' $1').trim()}<br>
+                Status: Updated successfully<br>
+                Next milestone: Automated
+            `;
+        }
+
+        function trackSupply() {
+            const partNum = document.getElementById('partNumber').value;
+            const supplier = document.getElementById('supplier').value;
+            
+            const output = document.getElementById('supplyOutput');
+            output.innerHTML = `
+                <span class="status-indicator status-active"></span>
+                <strong>Supply Chain Status:</strong><br>
+                Part: ${partNum}<br>
+                Supplier: ${supplier}<br>
+                Status: In Transit<br>
+                ETA: ${Math.floor(Math.random() * 5 + 2)} days
+            `;
+        }
+
+        function runQualityTest() {
+            const testType = document.getElementById('testType').value;
+            
+            const output = document.getElementById('qualityOutput');
+            output.innerHTML = `
+                <span class="status-indicator status-active"></span>
+                <strong>Quality Test Results:</strong><br>
+                Test: ${testType.replace(/([A-Z])/g, ' $1').trim()}<br>
+                Result: PASS<br>
+                Compliance: 100%<br>
+                Certificate: QC-${Math.floor(Math.random() * 10000)}-2026
+            `;
+        }
+
+        // Launch Operations Functions
+        function initiateCountdown() {
+            const output = document.getElementById('launchOutput');
+            const tMinus = document.getElementById('tMinus').value;
+            
+            output.innerHTML = `
+                <span class="status-indicator status-active"></span>
+                <strong>COUNTDOWN INITIATED</strong><br>
+                T-${tMinus} seconds<br>
+                All systems GO<br>
+                Weather: GREEN<br>
+                Range: CLEAR
+            `;
+        }
+
+        function abortLaunch() {
+            const output = document.getElementById('launchOutput');
+            output.innerHTML = `
+                <span class="status-indicator status-warning"></span>
+                <strong>LAUNCH ABORTED</strong><br>
+                Safing procedures initiated<br>
+                Vehicle secure<br>
+                Awaiting investigation
+            `;
+        }
+
+        function startTelemetry() {
+            alert('Telemetry monitoring started!\n\nReceiving real-time data from all vehicle systems.\nAll parameters nominal.');
+        }
+
+        function sendCommand() {
+            const command = document.getElementById('flightCommand').value;
+            
+            const output = document.getElementById('commandOutput');
+            output.innerHTML = `
+                <span class="status-indicator status-active"></span>
+                <strong>Command Sent:</strong><br>
+                ${command.replace(/([A-Z])/g, ' $1').trim()}<br>
+                Status: Acknowledged<br>
+                Execution: Scheduled
+            `;
+        }
+
+        // Analytics Functions
+        function runAnalysis() {
+            alert('Analysis complete!\n\nData processed successfully.\nResults available in visualization panel.');
+        }
+
+        function generateReport() {
+            const output = document.getElementById('reportOutput');
+            const alert = document.getElementById('reportAlert');
+            
+            output.innerHTML = '<span class="status-indicator status-active"></span>Generating comprehensive mission report...';
+            
+            setTimeout(() => {
+                output.innerHTML = '<span class="status-indicator status-active"></span>Report generated successfully!';
+                alert.style.display = 'block';
+            }, 1500);
+        }
+
+        function predictMaintenance() {
+            const system = document.getElementById('maintenanceSystem').value;
+            const hours = document.getElementById('flightHours').value;
+            
+            const output = document.getElementById('maintenanceOutput');
+            output.innerHTML = `
+                <span class="status-indicator status-active"></span>
+                <strong>Predictive Analysis:</strong><br>
+                System: ${system.replace(/([A-Z])/g, ' $1').trim()}<br>
+                Flight Hours: ${hours}<br>
+                <br>
+                Next Maintenance: ${Math.floor(Math.random() * 50 + 20)} hours<br>
+                Priority: Medium<br>
+                Confidence: 94%
+            `;
+        }
+
+        // Compliance Functions
+        function checkCompliance() {
+            const agency = document.getElementById('agency').value;
+            
+            const output = document.getElementById('complianceOutput');
+            output.innerHTML = `
+                <span class="status-indicator status-active"></span>
+                <strong>Compliance Verification:</strong><br>
+                Agency: ${agency.toUpperCase()}<br>
+                Status: COMPLIANT<br>
+                Last Audit: ${new Date().toLocaleDateString()}<br>
+                Next Review: ${new Date(Date.now() + 90*24*60*60*1000).toLocaleDateString()}
+            `;
+        }
+
+        function updateDocument() {
+            const docName = document.getElementById('docName').value;
+            const version = document.getElementById('docVersion').value;
+            
+            const output = document.getElementById('docOutput');
+            output.innerHTML = `
+                <span class="status-indicator status-active"></span>
+                <strong>Document Updated:</strong><br>
+                ${docName}<br>
+                Version: ${version}<br>
+                Timestamp: ${new Date().toLocaleString()}<br>
+                Stored in secure repository
+            `;
+        }
+
+        function verifySafety() {
+            const output = document.getElementById('safetyOutput');
+            output.innerHTML = `
+                <span class="status-indicator status-active"></span>
+                <strong>Safety Verification Complete:</strong><br>
+                All protocols verified<br>
+                Personnel accounted for<br>
+                Emergency systems: READY<br>
+                Status: GREEN
+            `;
+        }
+    </script>
+</body>
+</html>
